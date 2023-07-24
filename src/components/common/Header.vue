@@ -6,13 +6,13 @@
           <img src="@/assets/image/logo.png" alt="">
         </a></h1>
         <ul class="public-head-list">
-          <li><a href="index.html" target="_blank">主页</a></li>
+          <li><a href="javascript:void(0);" @click="goLink('/')">主页</a></li>
           <li class="public-head-hover">
             <a href="javascript:void(0);">我要投资</a>
             <!--二级导航-->
             <div class="two-title">
-              <a href="javascript:;">优选类产品</a>
-              <a href="javascript:;">散标类产品</a>
+              <a href="javascript:void(0);" @click="goLink('/page/product/list',{pType:1})">优选类产品</a>
+              <a href="javascript:void(0);" @click="goLink('/page/product/list',{pType:2})">散标类产品</a>
             </div>
           </li>
           <li><a href="user_center.html" target="_blank">借款人信息</a></li>
@@ -32,12 +32,15 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Header",
-  methods;{
-    goLink(url,params){
+  methods: {
+    goLink(url, params) {
       //使用router做页面跳转，vue中的对象
-
+      this.$router.push({
+        path: url,
+        query: params
+      });
+    },
   }
-}
 }
 </script>
 

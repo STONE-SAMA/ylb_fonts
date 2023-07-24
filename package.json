@@ -12,6 +12,7 @@
     "core-js": "^3.8.3",
     "qs": "^6.11.2",
     "vue": "^3.3.4",
+    "vue-layx": "^1.0.3",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {

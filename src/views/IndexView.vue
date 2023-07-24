@@ -76,15 +76,18 @@
             </li>
             <li>
               <p><b>{{ product.leftProductMoney }}</b>元</p>
-              <span>余利可投资金额</span>
+              <span>剩余可投资金额</span>
             </li>
           </ul>
-          <a href="details.html" target="_blank" class="new-user-btn">立即投资</a>
+          <a href="javascript:void(0);" @click="goLink('/page/product/detail',{productId:product.id})"
+             class="new-user-btn">立即投资</a>
         </div>
         <span class="new-tag">新用户专享</span>
       </div>
 
-      <h2 class="public-title"><span>优选产品</span> <a href="list.html" target="_blank" class="public-title-more">查看更多产品>></a>
+      <h2 class="public-title"><span>优选产品</span> <a href="javascript:void(0);"
+                                                        @click="goLink('/page/product/list',{pType:1})"
+                                                        class="public-title-more">查看更多产品>></a>
       </h2>
       <ul class="preferred-select clearfix">
         <li v-for="(product,index) in youXuan" :key="product.id">
@@ -104,18 +107,21 @@
               <p><b>{{ product.cycle }}</b>个月</p>
             </div>
             <div>
-              <span>余利可投资金额</span>
+              <span>剩余可投资金额</span>
               <p><b>{{ product.leftProductMoney }}</b>元</p>
             </div>
           </div>
           <p class="preferred-select-txt">
             优选计划项目，投资回报周期1个月，起点低，适合短期资金周转、对流动性要求高的投资人。
           </p>
-          <a href="javascript:;" target="_blank" class="preferred-select-btn">立即投资</a>
+          <a href="javascript:void(0);" @click="goLink('/page/product/detail',{productId:product.id})"
+             class="preferred-select-btn">立即投资</a>
         </li>
       </ul>
 
-      <h2 class="public-title"><span>散标产品</span> <a href="list.html" target="_blank" class="public-title-more">查看更多产品>></a>
+      <h2 class="public-title"><span>散标产品</span> <a href="javascript:void(0);"
+                                                        @click="goLink('/page/product/list',{pType:2})"
+                                                        class="public-title-more">查看更多产品>></a>
       </h2>
       <ul class="preferred-select clearfix">
         <li v-for="product in sanBiao" :key="product.id">
@@ -132,14 +138,15 @@
               <p><b>{{ product.cycle }}</b>个月</p>
             </div>
             <div>
-              <span>余利可投资金额</span>
+              <span>剩余可投资金额</span>
               <p><b>{{ product.leftProductMoney }}</b>元</p>
             </div>
           </div>
           <p class="preferred-select-txt">
             散标计划项目，投资回报周期1个月，起点低，适合短期资金周转、对流动性要求高的投资人。
           </p>
-          <a href="javascript:;" target="_blank" class="preferred-select-btn">立即投资</a>
+          <a href="javascript:void(0);" @click="goLink('/page/product/detail',{productId:product.id})"
+             class="preferred-select-btn">立即投资</a>
         </li>
       </ul>
 
@@ -256,7 +263,7 @@ export default {
       if (resp) {
         this.platInfo = resp.data.data;
       }
-    })
+    });
 
     //向服务器获取产品数据
     doGet('/v1/product/index', {}).then(resp => {
@@ -265,7 +272,16 @@ export default {
         this.youXuan = resp.data.data.youXuan;
         this.sanBiao = resp.data.data.sanBiao;
       }
-    })
+    });
+  },
+  methods: {
+    goLink(url, params) {
+      //使用router做页面跳转，vue中的对象
+      this.$router.push({
+        path: url,
+        query: params
+      });
+    }
   }
 }
 </script>
