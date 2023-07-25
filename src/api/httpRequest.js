@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from 'qs';
 
 //设置默认值
 axios.defaults.baseURL = "http://localhost:8000/api";
@@ -33,9 +34,19 @@ function doPostJson(url, params) {
     });
 }
 
+/**
+ * 请求是 key=value参数格式
+ */
+function doPost(url, params){
+    //qs 把json对象转为 a=1&b=2 ， 也可以反向
+    let requestData = qs.stringify(params);
+    return axios.post(url,requestData);
+}
+
 
 //暴露函数
 export {
     doGet,
-    doPostJson
+    doPostJson,
+    doPost,
 }
