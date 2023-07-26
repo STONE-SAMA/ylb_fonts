@@ -31,7 +31,7 @@
               <p class="prompt_yan"></p>
             </div>
             <div class="alert-input-btn">
-              <input type="submit" class="login-submit" value="登录">
+              <input type="button" @click="userLogin" class="login-submit" value="登录">
             </div>
           </form>
         </div>

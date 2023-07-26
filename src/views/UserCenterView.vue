@@ -13,12 +13,12 @@
         </div>
         <div class="user-head-right fl">
           <ul class="user-head-name fl">
-            <li><b>周立松</b></li>
-            <li>13801000156</li>
-            <li>最近登录：2021-08-19  12:02:12</li>
+            <li><b>{{ userBaseInfo.name }}</b></li>
+            <li>{{ userBaseInfo.phone }}</li>
+            <li>最近登录：{{ userBaseInfo.loginTime }}</li>
           </ul>
           <div class="user-head-money fr">
-            <p>可用余额：<span>￥8.291.15元</span></p>
+            <p>可用余额：<span>￥{{ userBaseInfo.money }}元</span></p>
             <a href="user_pay.html" target="_blank" class="user-head-a1">充值</a>
             <a href="details.html" target="_blank" class="user-head-a2">投资</a>
           </div>
@@ -43,37 +43,37 @@
               <td>1</td>
               <td>新手宝</td>
               <td>1500.0</td>
-              <td>2021-08-19 </td>
+              <td>2021-08-19</td>
             </tr>
             <tr>
               <td>2</td>
               <td>新手宝</td>
               <td>1500.0</td>
-              <td>2021-08-19 </td>
+              <td>2021-08-19</td>
             </tr>
             <tr>
               <td>3</td>
               <td>新手宝</td>
               <td>1500.0</td>
-              <td>2021-08-19 </td>
+              <td>2021-08-19</td>
             </tr>
             <tr>
               <td>4</td>
               <td>新手宝</td>
               <td>1500.0</td>
-              <td>2021-08-19 </td>
+              <td>2021-08-19</td>
             </tr>
             <tr>
               <td>5</td>
               <td>新手宝</td>
               <td>1500.0</td>
-              <td>2021-08-19 </td>
+              <td>2021-08-19</td>
             </tr>
             <tr>
               <td>6</td>
               <td>新手宝</td>
               <td>1500.0</td>
-              <td>2021-08-19 </td>
+              <td>2021-08-19</td>
             </tr>
             </tbody>
           </table>
@@ -86,47 +86,17 @@
             <thead class="datail_thead">
             <tr>
               <th>序号</th>
-              <th>充值描述</th>
+              <th>充值结果</th>
               <th>充值金额</th>
               <th>充值时间</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>1</td>
-              <td>新手宝</td>
-              <td>1500.0</td>
-              <td>2021-08-19 </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>新手宝</td>
-              <td>1500.0</td>
-              <td>2021-08-19 </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>新手宝</td>
-              <td>1500.0</td>
-              <td>2021-08-19 </td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>新手宝</td>
-              <td>1500.0</td>
-              <td>2021-08-19 </td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td>新手宝</td>
-              <td>1500.0</td>
-              <td>2021-08-19 </td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td>新手宝</td>
-              <td>1500.0</td>
-              <td>2021-08-19 </td>
+            <tr v-for="(item,index) in rechargeList" :key="item.id">
+              <td>{{index+1}}</td>
+              <td>{{item.result}}</td>
+              <td>{{item.rechargeMoney}}</td>
+              <td>{{item.rechargeDate}}</td>
             </tr>
             </tbody>
           </table>
@@ -148,38 +118,38 @@
             <tr>
               <td>1</td>
               <td>新手宝</td>
-              <td>2021-08-19 </td>
-              <td>0.46  </td>
+              <td>2021-08-19</td>
+              <td>0.46</td>
             </tr>
             <tr>
               <td>2</td>
               <td>新手宝</td>
-              <td>2021-08-19 </td>
-              <td>0.46  </td>
+              <td>2021-08-19</td>
+              <td>0.46</td>
             </tr>
             <tr>
               <td>3</td>
               <td>新手宝</td>
-              <td>2021-08-19 </td>
-              <td>0.46  </td>
+              <td>2021-08-19</td>
+              <td>0.46</td>
             </tr>
             <tr>
               <td>4</td>
               <td>新手宝</td>
-              <td>2021-08-19 </td>
-              <td>0.46  </td>
+              <td>2021-08-19</td>
+              <td>0.46</td>
             </tr>
             <tr>
               <td>5</td>
               <td>新手宝</td>
-              <td>2021-08-19 </td>
-              <td>0.46  </td>
+              <td>2021-08-19</td>
+              <td>0.46</td>
             </tr>
             <tr>
               <td>6</td>
               <td>新手宝</td>
-              <td>2021-08-19 </td>
-              <td>0.46  </td>
+              <td>2021-08-19</td>
+              <td>0.46</td>
             </tr>
             </tbody>
           </table>
@@ -197,14 +167,44 @@
 <script>
 import Header from "@/components/common/Header.vue";
 import Footer from "@/components/common/Footer.vue";
+import {doGet} from "@/api/httpRequest";
 
 export default {
   name: "UserCenterView",
-  components:{
+  components: {
     Header,
     Footer,
   },
+  data() {
+    return {
+      userBaseInfo: {
+        loginTime: "",
+        money: "",
+        phone: "",
+        name: "",
+        headerUrl: ""
+      },
+      rechargeList: [{
+        id: 0,
+        result: "",
+        rechargeDate: "",
+        rechargeMoney: 0
+      }]
+    }
+  },
+  mounted() {
+    doGet('/v1/user/usercenter').then(resp => {
+      if (resp && resp.data.code == 1) {
+        this.userBaseInfo = resp.data.data;
+      }
+    })
 
+    doGet('/v1/recharge/records').then(resp => {
+      if (resp && resp.data.code == 1) {
+        this.rechargeList = resp.data.list;
+      }
+    })
+  }
 }
 </script>
 

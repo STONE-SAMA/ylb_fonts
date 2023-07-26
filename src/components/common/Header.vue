@@ -23,6 +23,8 @@
       <div class="public-head-right">
         <a href="javascript:void(0);" @click="goLink('/page/user/login',{})">登录</a>
         <a href="javascript:void(0);" @click="goLink('/page/user/register',{})">注册</a>
+        <a href="javascript:void(0);" @click="goLink('/page/user/realname',)">实名认证</a>
+        <a href="javascript:void(0);" @click="goLink('/page/user/usercenter',)">用户中心</a>
       </div>
     </div>
   </div>

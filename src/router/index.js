@@ -42,7 +42,7 @@ const routes = [
   },
   {
     path: '/page/user/realname',
-    name: 'UserCenterView',
+    name: 'RealNameView',
     component: () => import('../views/RealNameView.vue')
   }
 ]
