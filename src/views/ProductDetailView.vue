@@ -71,15 +71,21 @@
           <h3 class="detail-right-mode-title">收益方式</h3>
           <p class="detail-right-mode-p"><span>到期还本付息</span></p>
           <h3 class="detail-right-mode-title">我的账户可用</h3>
-          <div class="detail-right-mode-rmb">
+
+          <div class="detail-right-mode-rmb" v-if="logined==false">
             <p>资金（元）：******</p>
-            <a href="login.html" target="_blank">请登录</a>
+            <a href="javascript:void(0);" @click="goLink('/page/user/login',)">请登录</a>
           </div>
-          <h3 class="detail-right-mode-title">预计本息收入（元）</h3>
+          <div class="detail-right-mode-rmb"  v-else>
+            <p>资金（元）：{{this.accountMoney}}</p>
+          </div>
+
+          <h3 class="detail-right-mode-title">利息收入（元）{{income}}</h3>
           <form action="" id="number_submit">
             <p>请在下方输入投资金额</p>
-            <input type="text" placeholder="请输入日投资金额，应为100元整倍数" name="" class="number-money">
-            <input type="submit" value="立即投资" class="submit-btn">
+            <input type="text" placeholder="请输入日投资金额，应为100元整倍数" v-model="investMoney" @blur="checkInvestMoney" class="number-money">
+            <div class="err">{{investMoneyErr}}</div>
+            <input type="button" value="立即投资" @click="investProduct" class="submit-btn">
           </form>
 
         </div>
@@ -94,7 +100,8 @@
 <script>
 import Header from "@/components/common/Header.vue";
 import Footer from "@/components/common/Footer.vue";
-import {doGet} from "@/api/httpRequest";
+import {doGet, doPost} from "@/api/httpRequest";
+import layx from "vue-layx";
 
 export default {
   name: "ProductDetailView",
@@ -126,21 +133,103 @@ export default {
           phone: "",
           bidTime: "",
           bidMoney: 0.00
-        }]
+        }],
+      logined:false,
+      accountMoney:0.0,
+      investMoney: 100,
+      investMoneyErr:'',
+      income:""
+    }
+  },
+  methods:{
+    goLink(url, params) {
+      //使用router做页面跳转，vue中的对象
+      this.$router.push({
+        path: url,
+        query: params
+      });
+    },
+    initPage(){
+      //查询产品信息
+      let productId = this.$route.query.productId;
+      doGet('/v1/product/info', {productId: productId}).then(resp => {
+        if (resp) {
+          this.product = resp.data.data;
+          this.bidList = resp.data.list;
+        }
+      });
+
+      //查询资金
+      doGet('/v1/user/usercenter').then(resp=>{
+        if( resp && resp.data.code == 1){
+          this.accountMoney = resp.data.data.money;
+        }
+      })
+    },
+    checkInvestMoney(){
+      if( isNaN(this.investMoney )){
+        this.investMoneyErr = '请输入正确的金额';
+      } else if( parseInt(this.investMoney) < 100){
+        this.investMoneyErr = '投资最小是100元';
+      } else if( parseFloat(this.investMoney) % 100 !=0 ){
+        this.investMoneyErr = '投资金额是100的整数倍';
+      } else {
+        this.investMoneyErr = '';
+        //计算利息  利息 = 本金 * 周期 * 利率
+        //当前产品数据 利率是 年利率是 ，百分数 。
+        //不同类型的产品 ，周期不同， 新手宝是 天，  其他是月（30）
+        //日利率
+        let dayRate  = this.product.rate / 365 / 100;
+        //利息
+        let incomeMoney = 0.0;
+        if( this.product.productType == 0 ) {
+          incomeMoney = this.investMoney * this.product.cycle * dayRate;
+        } else {
+          incomeMoney = this.investMoney * (this.product.cycle * 30) * dayRate;
+        }
+        this.income = incomeMoney.toFixed(2);
+      }
+    },
+    investProduct(){
+      //登录， 实名认证过
+      let userinfo = JSON.parse(window.localStorage.getItem("userinfo"));
+      if( userinfo ) {
+        //检查是否有实名认证
+        if(userinfo.name != ''){
+          //投资
+          this.checkInvestMoney();
+          if(this.investMoneyErr == ''){
+            doPost('/v1/invest/product',{ productId: this.product.id, money:this.investMoney})
+                .then(resp=>{
+                  if( resp  && resp.data.code == 1){
+                    //投资成功
+                    this.initPage();
+                  }
+                })
+          }
+        } else {
+          //进行实名认证
+          layx.msg('投资前需要实名认证.',{dialogIcon:'warn',position:'ct'});
+        }
+      } else {
+        //去登录
+        layx.msg('请先登录.',{dialogIcon:'warn',position:'ct'});
+      }
     }
   },
   mounted() {
-    let productId = this.$route.query.productId;
-    doGet('/v1/product/info', {productId: productId}).then(resp => {
-      if (resp) {
-        this.product = resp.data.data;
-        this.bidList = resp.data.list;
-      }
-    });
+    //判断是否登录
+    if( window.localStorage.getItem("userinfo")){
+      this.logined = true;
+    }
+    this.initPage();
   }
 }
 </script>
 
 <style scoped>
-
+.err {
+  color: red;
+  font-size: 18px;
+}
 </style>

@@ -50,8 +50,8 @@ axios.interceptors.request.use(function(config){
     //在需要用户登录后的操作，在请求的url中加入token
     //判断访问服务器的url地址， 需要提供身份信息，加入token
     console.log("url==="+config.url);
-    // if( config.url == '/v1/user/realname' || config.url=='/v1/user/usercenter' || config.url=='/v1/recharge/records') {
-    if( config.url == '/v1/user/realname') {
+    if( config.url == '/v1/user/realname' || config.url=='/v1/user/usercenter' || config.url=='/v1/recharge/records') {
+    // if( config.url == '/v1/user/realname') {
         let storageToken = window.localStorage.getItem("token");
         let userinfo = window.localStorage.getItem("userinfo");
         if( storageToken && userinfo ){
@@ -80,7 +80,7 @@ axios.interceptors.response.use(function(resp){
 },function (err){
     console.log("应答拦截器错误："+err)
     //回到首页
-    window.location.href = '/';
+    // window.location.href = '/';
 })
 
 

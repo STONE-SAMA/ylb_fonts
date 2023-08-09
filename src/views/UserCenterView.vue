@@ -19,8 +19,9 @@
           </ul>
           <div class="user-head-money fr">
             <p>可用余额：<span>￥{{ userBaseInfo.money }}元</span></p>
-            <a href="user_pay.html" target="_blank" class="user-head-a1">充值</a>
-            <a href="details.html" target="_blank" class="user-head-a2">投资</a>
+            <a href="javascript:void(0)" @click="goLink('/page/user/userpay')"
+               style="color: red" class="user-head-a1">充值</a>
+            <a href="details.html" target="_blank" style="color: red" class="user-head-a2">投资</a>
           </div>
         </div>
 
@@ -78,7 +79,8 @@
             </tbody>
           </table>
           <!--无记录-->
-          <p class="user-record-no">还没有投资记录，请投资：<a href="user_center.html" target="_blank">投资</a></p>
+          <p class="user-record-no">还没有投资记录，请投资：
+            <a href="javascript:void(0)" @click="goLink('/page/user/userpay')">投资</a></p>
         </div>
         <div class="user-record user-record-2">
           <h3 class="user-record-title">最近充值</h3>
@@ -175,11 +177,20 @@ export default {
     Header,
     Footer,
   },
+  methods:{
+    goLink(url, params) {
+      //使用router做页面跳转，vue中的对象
+      this.$router.push({
+        path: url,
+        query: params
+      });
+    },
+  },
   data() {
     return {
       userBaseInfo: {
         loginTime: "",
-        money: "",
+        money: 0.0,
         phone: "",
         name: "",
         headerUrl: ""
